@@ -1,35 +1,36 @@
 package org.example.lab3;
 
+import static org.example.Syntax._for;
+import static org.example.Throw.suppress;
+
+import com.google.common.base.Preconditions;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.Semaphore;
 import java.util.function.IntFunction;
 
-import com.google.common.base.Preconditions;
-import static org.example.Syntax._for;
-import static org.example.Throw.suppress;
-
 public final class BlockingStorage<T> {
   private final Semaphore space;
   private final Semaphore items;
-  private final Queue<T> storage;
+  private final List<T> storage;
 
   public BlockingStorage(int size) {
     space = new Semaphore(size);
     items = new Semaphore(0);
-    storage = new LinkedList<>();
+    storage = Collections.synchronizedList(new LinkedList<T>());
   }
 
   public void add(T element) {
     space.acquireUninterruptibly();
-    storage.add(element);
+    storage.addLast(element);
     items.release();
   }
 
   public T get() {
     items.acquireUninterruptibly();
-    T element = storage.poll();
+    T element = storage.getFirst();
     space.release();
     return element;
   }

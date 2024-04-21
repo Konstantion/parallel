@@ -41,7 +41,7 @@ java {
 application {
     // mainClass = "org.example.lab1.Main"
     // mainClass = "org.example.lab2.Main"
-    // mainClass = "org.example.lab3.Main"
-    mainClass = "org.example.lab4.Main"
+    mainClass = "org.example.lab3.Main"
+    // mainClass = "org.example.lab4.Main"
     // mainClass = "org.example.lab4.Main2"
 }

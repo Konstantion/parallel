@@ -3,16 +3,16 @@ package org.example;
 public final class Throw {
   private Throw() {}
 
-  public static <T, E extends Throwable> T ss(CheckedBlock<T, E> asd) {
+  public static <T, E extends Throwable> T suppress(CheckedBlock<T, E> block) {
     try {
-      return asd.run();
+      return block.run();
     } catch (Throwable e) {
       return sneakyThrow(e);
     }
   }
 
   public static <E extends Throwable> void suppress(CheckedRunnable<E> runnable) {
-    ss(runnable.asd());
+    suppress(runnable.block());
   }
 
   @SuppressWarnings("unchecked")
@@ -27,7 +27,7 @@ public final class Throw {
   public static interface CheckedRunnable<E extends Throwable> {
     void run() throws E;
 
-    default CheckedBlock<Unit, E> asd() {
+    default CheckedBlock<Unit, E> block() {
       return () -> {
         this.run();
         return Unit.value();

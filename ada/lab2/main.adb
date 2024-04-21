@@ -19,9 +19,9 @@ procedure Main is
     begin
         Reset (Gen);
         for I in Arr'Range loop
-            Arr(I) := Random(Gen);
+            Arr (I) := Random (Gen);
         end loop;
-        Arr(Random(Gen)) := -1;
+        Arr (Random (Gen)) := -1;
     end Init_Arr;
 
     function Part_Min (Start_Index, Finish_Index : Integer) return Integer is
@@ -29,8 +29,8 @@ procedure Main is
         Min_Index : Integer := 0;
     begin
         for I in Start_Index .. Finish_Index loop
-            if Arr(I) < Min_Value then
-                Min_Value := Arr(I);
+            if Arr (I) < Min_Value then
+                Min_Value := Arr (I);
                 Min_Index := I;
             end if;
         end loop;
@@ -53,8 +53,8 @@ procedure Main is
     protected body Part_Manager_Type is
         procedure Set_Part_Min (Min_Index : Integer) is
         begin
-            if Arr(Min_Index) < Current_Min then
-                Current_Min := Arr(Min_Index);
+            if Arr (Min_Index) < Current_Min then
+                Current_Min     := Arr (Min_Index);
                 Min_Index_Local := Min_Index;
             end if;
             Task_Count := Task_Count + 1;
@@ -76,7 +76,7 @@ procedure Main is
             Local_Finish := Finish_Index;
         end Start;
 
-        Part_Manager.Set_Part_Min(Part_Min(Local_Start, Local_Finish));
+        Part_Manager.Set_Part_Min (Part_Min (Local_Start, Local_Finish));
     end Worker;
 
     function Parallel_Find_Min return Integer is
@@ -85,26 +85,27 @@ procedure Main is
         Min_Index  : Integer;
     begin
         for I in Workers'Range loop
-            Workers(I).Start((I - 1) * Range_Size + 1, I * Range_Size);
+            Workers (I).Start ((I - 1) * Range_Size + 1, I * Range_Size);
         end loop;
 
-        Part_Manager.Get_Min(Min_Index);
+        Part_Manager.Get_Min (Min_Index);
         return Min_Index;
     end Parallel_Find_Min;
 
-    Min_Index   : Integer;
-    Start_Time  : Time;
-    Stop_Time   : Time;
-    Elapsed_Time: Time_Span;
+    Min_Index    : Integer;
+    Start_Time   : Time;
+    Stop_Time    : Time;
+    Elapsed_Time : Time_Span;
 begin
     Start_Time := Clock;
     Init_Arr;
-    Min_Index := Parallel_Find_Min;
-    Stop_Time := Clock;
+    Min_Index    := Parallel_Find_Min;
+    Stop_Time    := Clock;
     Elapsed_Time := Stop_Time - Start_Time;
 
-    Put_Line ("Minimum value in array: " & Integer'Image(Arr(Min_Index)));
-    Put_Line ("Index of minimum value: " & Integer'Image(Min_Index));
-    Put_Line ("Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+    Put_Line ("Minimum value in array: " & Integer'Image (Arr (Min_Index)));
+    Put_Line ("Index of minimum value: " & Integer'Image (Min_Index));
+    Put_Line
+       ("Elapsed time: " & Duration'Image (To_Duration (Elapsed_Time)) &
+        " seconds");
 end Main;
-
