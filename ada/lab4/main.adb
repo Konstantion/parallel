@@ -2,6 +2,7 @@ with Ada.Text_IO;     use Ada.Text_IO;
 with GNAT.Semaphores; use GNAT.Semaphores;
 
 procedure Main is
+    USE_TOKEN              : constant Boolean := False;
     FORKS_COUNT            : constant Integer := 5;
     AVAILABLE_EATING_SEATS : constant Integer := 2;
 
@@ -22,9 +23,14 @@ procedure Main is
             Philosopher.Id := Id;
         end Start;
 
-        if Id = FORKS_COUNT then
-            Right_Fork := Id;
-            Left_Fork  := Id rem FORKS_COUNT + 1;
+        if not USE_TOKEN then
+            if Id = FORKS_COUNT then
+                Right_Fork := Id;
+                Left_Fork  := Id rem FORKS_COUNT + 1;
+            else
+                Left_Fork  := Id;
+                Right_Fork := Id rem FORKS_COUNT + 1;
+            end if;
         else
             Left_Fork  := Id;
             Right_Fork := Id rem FORKS_COUNT + 1;
@@ -34,7 +40,9 @@ procedure Main is
             Put_Line
                ("Philosopher " & Integer'Image (Id) & " is thinking. Round: " &
                 Integer'Image (I));
-            -- Eating_Philosophers.Seize;
+            if USE_TOKEN then
+                Eating_Philosophers.Seize;
+            end if;
 
             Forks (Left_Fork).Seize;
             Put_Line
@@ -52,7 +60,9 @@ procedure Main is
 
             Forks (Right_Fork).Release;
             Forks (Left_Fork).Release;
-            -- Eating_Philosophers.Release;
+            if USE_TOKEN then
+                Eating_Philosophers.Release;
+            end if;
 
             Put_Line
                ("Philosopher " & Integer'Image (Id) &
