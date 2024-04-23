@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <omp.h>
+#include <random>
 #include <vector>
 
 int computeTotalSum(const std::vector<std::vector<int>> &array) {
@@ -34,9 +35,25 @@ std::pair<int, int> findMinRowSum(const std::vector<std::vector<int>> &array) {
   return {minIndex, minSum};
 }
 
+std::vector<std::vector<int>> generateRandomData(int rows, int cols) {
+  std::vector<std::vector<int>> data(rows, std::vector<int>(cols));
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(-1000, 1000);
+
+  for (auto &row : data) {
+    for (auto &elem : row) {
+      elem = distrib(gen);
+    }
+  }
+  return data;
+}
+
 int main() {
-  std::vector<std::vector<int>> data = {
-      {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
+  int numRows = 1000;
+  int numCols = 1000;
+
+  std::vector<std::vector<int>> data = generateRandomData(numRows, numCols);
 
   int totalSum;
   std::pair<int, int> minRowSum;
@@ -60,3 +77,4 @@ int main() {
 
   return 0;
 }
+
